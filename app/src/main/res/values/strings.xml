@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">WeatherApp</string>
+    <string name="search_city_hint">Enter City name</string>
+    <string name="search_location">Weather Report</string>
+    <string name="search_state_hint">Enter State Code     (optional)</string>
+    <string name="search_country_hint">Enter Country Code     (optional)</string>
+    <string name="location_name">Location:</string>
+    <string name="weather_title">Weather:</string>
+    <string name="windsSpeedTitle">Wind Speed:</string>
+    <string name="humidityTitle">Humidity:</string>
+    <string name="select_location">Select the location</string>
+    <string name="welcome_to_weatherApp">Welcome to Weather App</string>
+    <string name="no_weather_report">No Weather Report Found</string>
+    <string name="something_went_wrong">Something went wrong. Try again later</string>
+    <string name="update_location">Update location?</string>
+    <string name="weather_details">Today\'s weather details</string>
+    <string name="grant_location_access">Grant Location</string>
+    <string name="orTitle">OR</string>
+    <string name="location_not_found">Location Not Available For this Device</string>
+</resources>
