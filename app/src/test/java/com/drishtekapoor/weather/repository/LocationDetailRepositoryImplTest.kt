@@ -52,10 +52,12 @@ internal class LocationDetailRepositoryImplTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
+        // Create an instance of LocationDetailRepositoryImpl with the mocked locationService
         underTest = LocationDetailRepositoryImpl(locationService)
     }
 
 
+    // Helper function to set the mock response for the locationService
     private suspend fun setMockResponse() {
         Mockito.`when`(locationService.getWeatherByLocation(weatherData.name)).thenReturn(
             Response.success(weatherData)
@@ -66,9 +68,15 @@ internal class LocationDetailRepositoryImplTest {
     fun whenGetDataThenCallViewWithData() {
         runTest {
             val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+
+            // Set the main dispatcher and background dispatcher to the test dispatcher
             Dispatchers.setMain(testDispatcher)
             setMockResponse()
+
+            // Call the getLocationData function of the repository
             val response = underTest.getLocationData(weatherData.name)
+            
+            // Assert that the response body matches the expected weatherData
             assertEquals(weatherData, response.body()!!)
         }
     }

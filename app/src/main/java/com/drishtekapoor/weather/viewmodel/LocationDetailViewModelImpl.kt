@@ -31,11 +31,15 @@ class LocationDetailViewModelImpl(
             if (country != null) {
                 valueList.add(country)
             }
+
+            // Call the repository to fetch location weather data
             val response = locationDetailRepository.getLocationData(valueList.joinToString(","))
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
                     if (response.body() != null) {
                         val data = response.body()!!.weather
+
+                        // Check if weather data is empty
                         if (data.isEmpty()) {
                             locationWeatherData.value = LocationDetailViewState.Empty
                         } else {
@@ -44,6 +48,7 @@ class LocationDetailViewModelImpl(
                         }
                     } else locationWeatherData.value = LocationDetailViewState.Empty
                 } else {
+                    // Handle error response
                     locationWeatherData.value = LocationDetailViewState.Error(response.message())
                 }
             }

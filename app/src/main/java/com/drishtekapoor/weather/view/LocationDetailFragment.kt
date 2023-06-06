@@ -33,6 +33,7 @@ class LocationDetailFragment : DaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Inflate the layout for this fragment
         binding = LocationDetailFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -40,8 +41,11 @@ class LocationDetailFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set the title of the action bar
         (activity as MainActivity).supportActionBar?.title =
             resources.getText(R.string.weather_details)
+
+        // Set a click listener on the updateLocation button to start LocationActivity
         binding.updateLocation.setOnClickListener {
             it.context.startActivity(Intent(it.context, LocationActivity::class.java))
         }
@@ -50,26 +54,32 @@ class LocationDetailFragment : DaggerFragment() {
     override fun onResume() {
         super.onResume()
 
+        // Retrieve the saved location details from SharedPreferences
         val locationName = sharedPreferences.getString("city", "")
         val state = sharedPreferences.getString("state", null)
         val country = sharedPreferences.getString("country", null)
 
         locationName?.let {
+            // Observe the LiveData from the ViewModel to receive location details
             viewModel.getLocationLiveData().observe(viewLifecycleOwner) {
                 when (it) {
+                    // Handle empty state
                     LocationDetailViewState.Empty -> {
                         binding.progressBar.isVisible = false
                         binding.eventsErrorView.isVisible = true
                     }
                     is LocationDetailViewState.Error -> {
+                        // Handle error state
                         binding.progressBar.isVisible = false
                         binding.eventsErrorView.isVisible = true
                     }
                     LocationDetailViewState.Loading -> {
+                        // Show loading state
                         binding.progressBar.isVisible = true
                         binding.eventsErrorView.isVisible = false
                     }
                     is LocationDetailViewState.Success -> {
+                        // Handle success state and populate UI with weather data
                         binding.progressBar.isVisible = false
                         binding.eventsErrorView.isVisible = false
                         val location = it.weatherData.name
@@ -78,10 +88,13 @@ class LocationDetailFragment : DaggerFragment() {
                         val humidity = it.weatherData.main.humidity
                         val icon = it.weatherData.weather[0].icon
                         val iconUrl = "https://openweathermap.org/img/wn/$icon@2x.png"
+
+                        // Load weather icon using Picasso library and display it in the ImageView
                         Picasso.with(context)
                             .load(iconUrl)
                             .into(binding.image)
 
+                        // Set the weather information in the UI
                         binding.locationTitleDescription.text = location
                         binding.weatherDescription.text = weather
                         binding.windsSpeedDescription.text = windSpeed.toString()
@@ -90,7 +103,7 @@ class LocationDetailFragment : DaggerFragment() {
                 }
             }
         }
-
+        // Request weather data for the location
         locationName?.let { viewModel.getData(it, state, country) }
     }
 

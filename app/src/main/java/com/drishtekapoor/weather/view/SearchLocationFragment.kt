@@ -45,6 +45,7 @@ class SearchLocationFragment : DaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Inflate the layout for this fragment
         binding = SearchLocationFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -52,11 +53,16 @@ class SearchLocationFragment : DaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Set the title of the action bar
         (activity as LocationActivity).supportActionBar?.title =
             resources.getText(R.string.welcome_to_weatherApp)
+
+        // Set a click listener on the search button to fetch weather data for the entered city
         binding.search.setOnClickListener {
             viewModel.getData(binding.cityEditText.text.toString())
         }
+
+        // Set a click listener on the requestPermissionButton to request location permission
         binding.requestPermissionButton.setOnClickListener {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -65,6 +71,7 @@ class SearchLocationFragment : DaggerFragment() {
     override fun onResume() {
         super.onResume()
 
+        // Observe the LiveData for search location results
         viewModel.getLocationLiveData().observe(viewLifecycleOwner) {
             when (it) {
                 SearchLocationViewState.Empty -> showEmpty()
@@ -74,6 +81,7 @@ class SearchLocationFragment : DaggerFragment() {
             }
         }
 
+        // Observe the LiveData for geo location results
         viewModel.getGeoLocationLiveData().observe(viewLifecycleOwner) {
             when (it) {
                 GeoLocationViewState.Empty -> {

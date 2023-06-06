@@ -58,7 +58,7 @@ internal class LocationDetailViewModelImplTest {
             cod = 5
         )
 
-
+    // Expected success response based on the weather data
     private val expectedSuccessResponse = LocationDetailViewState.Success(weatherData)
 
     @Before
@@ -70,27 +70,39 @@ internal class LocationDetailViewModelImplTest {
     fun whenResponseIsSuccessFullSuccessStateIsSet() {
         runTest {
             val testDispatcher = UnconfinedTestDispatcher(testScheduler)
+
+            // Set the main dispatcher and background dispatcher to the test dispatcher
             Dispatchers.setMain(testDispatcher)
+
+            // Create an instance of LocationDetailViewModelImpl with mocked dependencies and test dispatcher
             underTest = LocationDetailViewModelImpl(
                 locationDetailRepository,
                 testDispatcher,
                 testDispatcher
             )
             setMockSuccessResponse()
+
+            // Create an observer to listen to changes in the locationLiveData
             val myObserver = MyObserver()
             underTest.getLocationLiveData().observeForever(myObserver)
             underTest.getData("Zocca", null, null)
+
+            // Assert that the actual response received by the observer is the expected success response
             assertEquals(expectedSuccessResponse, myObserver.actualResponse)
+
+            // Remove the observer to avoid memory leaks
             underTest.getLocationLiveData().removeObserver(myObserver)
         }
     }
 
+    // Helper function to set the mock success response for the repository
     private suspend fun setMockSuccessResponse() {
         Mockito.`when`(locationDetailRepository.getLocationData(weatherData.name)).thenReturn(
             Response.success(weatherData)
         )
     }
 
+    // Custom Observer implementation for testing
     class MyObserver : Observer<LocationDetailViewState> {
         var actualResponse: LocationDetailViewState? = null
 

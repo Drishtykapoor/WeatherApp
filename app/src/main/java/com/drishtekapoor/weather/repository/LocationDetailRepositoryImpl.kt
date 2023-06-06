@@ -10,6 +10,7 @@ class LocationDetailRepositoryImpl @Inject constructor(
 ) : LocationDetailRepository {
 
     override suspend fun getLocationData(values: String): Response<WeatherData> {
+        // Call the locationService to get weather data by location
         return locationService.getWeatherByLocation(
             values,
             apiKey = Constants.API_KEY

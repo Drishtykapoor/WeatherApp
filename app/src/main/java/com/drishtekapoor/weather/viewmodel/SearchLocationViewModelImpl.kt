@@ -19,15 +19,19 @@ class SearchLocationViewModelImpl(private val searchLocationRepository: SearchLo
     private val geoLocationData= MutableLiveData<GeoLocationViewState>()
 
     override fun getData(cityName: String) {
+        // Set the loading state of locationData
         locationData.value = SearchLocationViewState.Loading
 
         viewModelScope.launch(Dispatchers.IO) {
+            // Call the repository to fetch location data
             val response =
                 searchLocationRepository.getData(cityName)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     if (response.body() != null) {
                         val data = response.body()!!.weather
+
+                        // Check if the weather data is empty
                         if (data.isEmpty()) {
                             locationData.value = SearchLocationViewState.Empty
                         } else {
@@ -44,9 +48,11 @@ class SearchLocationViewModelImpl(private val searchLocationRepository: SearchLo
     override fun getLocationLiveData(): LiveData<SearchLocationViewState> = locationData
 
     override fun getLocation(lat: Double, lon: Double) {
+        // Set the loading state of geoLocationData
         geoLocationData.value = GeoLocationViewState.Loading
 
         viewModelScope.launch(Dispatchers.IO) {
+            // Call the repository to fetch geo location data
             val response =
                 searchLocationRepository.getLocationData(lat.toString(), lon.toString())
             withContext(Dispatchers.Main) {
